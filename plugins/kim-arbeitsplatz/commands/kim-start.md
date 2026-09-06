@@ -47,12 +47,56 @@ Sitzung mitgelesen.
 
 ## Schritt 3 — Microsoft 365 verbinden
 
-Nur wenn gewünscht. Du brauchst die **Tenant-ID** des Unternehmens — die weiß die IT-Abteilung.
-Wenn sie nicht zur Hand ist, überspring den Schritt und notier ihn als offenen Punkt; alles
-andere funktioniert trotzdem.
+Nur wenn gewünscht. Und hier gibt es eine Entscheidung, die **nicht du und nicht KIM** trifft,
+sondern die IT des Unternehmens. Leg beide Wege vor, erklär die Folgen, und lass entscheiden.
 
-Trag den MCP-Server mit der Tenant-ID ein und lass die Person sich im Browser anmelden. Sie
-bestätigt dabei Berechtigungen — sag vorher, dass das normal ist und was Claude damit darf.
+Erklär vorher, worum es überhaupt geht — der Begriff "App-Registrierung" sagt niemandem etwas:
+
+> Damit Claude an deine Mails und Dateien darf, muss sich das Programm bei eurem Microsoft
+> ausweisen. Dafür braucht es einen Ausweis, den eure IT einmal ausstellt oder freigibt. Es
+> gibt zwei Wege — welcher besser passt, entscheidet eure IT, das ist ihre Zuständigkeit.
+
+**Weg A — eure IT gibt eine bestehende Anwendung frei.** Schneller: Es muss nichts eingerichtet
+werden, ein Administrator erlaubt einmal, dass diese Anwendung in eurem Microsoft-Konto benutzt
+werden darf. Danach meldet sich jeder mit seinem normalen Firmenkonto an.
+
+**Weg B — eure IT richtet eine eigene Anwendung ein.** Aufwendiger, dafür gehört der Ausweis
+euch: Ihr seht im Microsoft-Verwaltungsbereich genau, was er darf, könnt Rechte enger fassen
+und ihn jederzeit sperren. Manche IT-Abteilungen erlauben nur diesen Weg.
+
+**Beides ist in Ordnung, keiner ist der bessere.** Frag, ob es dazu eine Vorgabe gibt oder ob
+ihr die IT gemeinsam fragen sollt. Wenn die Antwort nicht sofort da ist, überspring den Schritt
+und notier ihn — alles Übrige funktioniert auch ohne Microsoft-Anbindung.
+
+### Die Anfrage an die IT
+
+Biete an, den Text vorzubereiten, den die Person weiterschicken kann. Nicht mehr als das —
+kurz, konkret, beantwortbar:
+
+> Betreff: Freigabe für einen KI-Assistenten auf meinem Arbeitsrechner
+>
+> Hallo,
+>
+> ich nutze im Rahmen unseres KI-Programms den Assistenten Claude Code auf meinem Rechner. Er
+> soll auf meine eigenen Mails, Termine und Dateien in Microsoft 365 zugreifen können — nur
+> auf meine, mit meiner Anmeldung, nichts darüber hinaus.
+>
+> Dafür brauche ich eure Entscheidung zwischen zwei Wegen:
+>
+> **A)** Ihr gebt die bestehende Anwendung in unserem Tenant frei (einmalige
+> Administrator-Zustimmung).
+> **B)** Ihr registriert eine eigene Anwendung bei uns und gebt mir deren Kennung.
+>
+> Welcher Weg passt besser zu unseren Vorgaben? Und gibt es etwas, das ich vorher wissen
+> sollte — etwa Einschränkungen, welche Daten ein solcher Assistent verarbeiten darf?
+>
+> Danke!
+
+Trag den gewählten Weg und die erhaltene Kennung ein, lass die Person sich im Browser anmelden
+und sag vorher, dass die Berechtigungsabfrage normal ist und was Claude damit darf.
+
+Halt die Entscheidung fest — Weg, Kennung, wer sie freigegeben hat, wann. Beim nächsten Rechner
+im selben Unternehmen erspart das die ganze Runde.
 
 ## Schritt 4 — n8n verbinden
 
