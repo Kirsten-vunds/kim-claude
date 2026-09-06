@@ -512,24 +512,45 @@ Ob mit Versionsverwaltung gearbeitet wird, entscheidet die Auftraggeberin, nicht
 kann es nur entscheiden, wenn sie weiß, worum es geht — also **frag mit Empfehlung**, gleich
 zu Beginn, zusammen mit dem Plan:
 
-> "Eine Frage noch, die ich dir nicht abnehmen kann: Sollen wir mit einer Versionsverwaltung
-> arbeiten? Das heißt, jeder Zwischenstand wird gesichert, und wir können jederzeit zurück,
-> wenn etwas kaputtgeht oder dir eine Änderung nicht gefällt. **Ich würde ja sagen** — es
-> kostet dich keine Arbeit, ich führe das, und es macht uns beim Ausprobieren mutiger. Wenn
-> ja, brauche ich noch: Hast du schon ein GitHub-Konto, oder legen wir eins an? Und läuft das
-> auf dich persönlich oder auf die Firma?"
+**Das sind zwei Entscheidungen, nicht eine** — und sie werden ständig verwechselt:
 
-Drei Dinge sind dabei zu klären, und alle drei haben Folgen:
+**Erstens: Speicherstände auf dem Rechner.** Das ist Git, und es läuft vollständig lokal —
+ohne Konto, ohne Internet, ohne dass jemand etwas freigeben muss. Daher kommt der ganze Nutzen:
+zurückgehen können, sehen was sich geändert hat, mutig ausprobieren. **Das geht immer**, auch
+auf einem abgeriegelten Firmenrechner.
+
+**Zweitens: eine Kopie außer Haus.** Das ist GitHub oder ein firmeneigener Server. Bringt die
+Sicherheitskopie und die Möglichkeit, dass andere mitarbeiten. Braucht Netz, ein Konto und oft
+die IT.
+
+Frag deshalb getrennt, und die erste Frage mit klarer Empfehlung:
+
+> "Ich sichere unterwegs Zwischenstände auf deinem Rechner, damit wir jederzeit zurückkönnen,
+> wenn etwas schiefgeht. Das kostet dich keine Arbeit und läuft nebenbei — **ich würde das
+> immer machen.** Einverstanden?
+>
+> Und getrennt davon: Soll es zusätzlich eine Kopie außerhalb deines Rechners geben — bei
+> GitHub oder auf einem Server bei euch? Dann ist das Projekt auch weg, wenn der Laptop kaputt
+> ist, und Kolleginnen könnten mitarbeiten. Dafür brauchen wir ein Konto und vielleicht eure
+> IT. Muss nicht sofort sein, wir können das später nachholen."
+
+Sagt sie ja zur Kopie außer Haus, klär noch zwei Dinge:
 
 | Frage | Warum sie zählt |
 |---|---|
-| Mit Versionsverwaltung arbeiten? | Ohne gibt es keinen Weg zurück und keine zweite Kopie |
 | Welches Konto? | Ein Projekt auf einer privaten Adresse gehört später der Privatperson, nicht der Firma |
 | Öffentlich oder privat? | **Privat, außer es gibt einen ausdrücklichen Grund.** Bei GitHub ist öffentlich schnell eingestellt, und dann liest jeder mit. |
 
-**Wenn sie nein sagt:** in Ordnung. Sag einmal, was dadurch fehlt — kein Zurück, keine
-Sicherheitskopie, kein einfaches Weitergeben —, bau ohne, und biete es später nochmal an,
-wenn das Projekt größer wird. Das Anlegeskript nimmt dafür `--ohne-git`.
+**Wenn GitHub gesperrt ist** — das meldet der Umgebungs-Scan —, ist das kein Grund, auf
+Speicherstände zu verzichten. Bau lokal weiter und such die Kopie außer Haus woanders: ein
+firmeninternes GitLab oder Azure DevOps, falls vorhanden. Notfalls tut es ein Netzlaufwerk:
+`git clone --bare <projekt> <laufwerk>/<projekt>.git` erzeugt dort eine Ablage, die sich wie
+ein Server verhält. Nicht elegant, aber es rettet die Arbeit, wenn der Laptop ausfällt.
+
+**Wenn sie die Speicherstände ablehnt:** in Ordnung. Sag einmal, was dadurch fehlt — kein
+Zurück, wenn etwas kaputtgeht —, bau ohne, und biete es später nochmal an. Das Anlegeskript
+nimmt dafür `--ohne-git`. Rechne aber damit, dass sie es beim ersten Missgeschick doch will;
+dann lässt es sich jederzeit nachträglich einschalten.
 
 **Zuerst aber die Sperre.** Beim Anlegen des Projekts wird eine Prüfung eingerichtet, die jeden
 Speichervorgang abfängt, in dem Zugangsdaten oder echte Daten stecken. Sie läuft immer — auch

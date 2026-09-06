@@ -68,6 +68,10 @@ Im laufenden Claude-Fenster:
 
 Claude holt sich das Paket selbst. Danach Claude einmal neu starten.
 
+> **Kommt eine Fehlermeldung, dass die Adresse nicht erreichbar ist?** Dann ist github.com auf
+> diesem Rechner gesperrt — das ist auf Firmenrechnern häufig. Es gibt einen zweiten Weg über
+> ein Archiv: siehe [OHNE-GITHUB.md](OHNE-GITHUB.md).
+
 ### Schritt 4 — Einrichten
 
 ```
