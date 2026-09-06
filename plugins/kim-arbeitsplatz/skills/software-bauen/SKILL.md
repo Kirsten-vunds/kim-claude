@@ -531,6 +531,26 @@ Drei Dinge sind dabei zu klären, und alle drei haben Folgen:
 Sicherheitskopie, kein einfaches Weitergeben —, bau ohne, und biete es später nochmal an,
 wenn das Projekt größer wird. Das Anlegeskript nimmt dafür `--ohne-git`.
 
+**Zuerst aber die Sperre.** Beim Anlegen des Projekts wird eine Prüfung eingerichtet, die jeden
+Speichervorgang abfängt, in dem Zugangsdaten oder echte Daten stecken. Sie läuft immer — auch
+wenn jemand aus dem Editor heraus speichert, auch ohne dich, und sie greift selbst dann, wenn
+die `.gitignore` umgangen wird.
+
+**Das ist die wichtigste einzelne Schutzmaßnahme im ganzen Skill.** Der Grund: Alles andere ist
+reparierbar. Ein Zugangsschlüssel, der einmal hochgeladen wurde, ist es nicht — er steht in der
+Versionsgeschichte, wird von automatischen Suchprogrammen innerhalb von Minuten gefunden und
+gilt ab dann als verbrannt, egal ob man ihn danach löscht. Deshalb wird das nicht nachträglich
+geprüft, sondern vorher verhindert.
+
+Zwei Regeln dazu für dich:
+
+- **Niemals blind alles hinzufügen.** Schau vor jedem Speichern, was tatsächlich dabei ist
+  (`git status`). Ein `git add -A` in einem Ordner, in dem jemand eben eine Excel-Liste mit
+  Kundendaten abgelegt hat, ist genau der Fehler, den die Sperre abfangen muss — verlass dich
+  nicht darauf, dass sie es tut.
+- **Wenn die Sperre anschlägt, ist das ein Erfolg, kein Hindernis.** Umgeh sie nicht mit
+  `--no-verify`. Räum auf, was sie gefunden hat, und speichere dann.
+
 **Wenn sie ja sagt, führst du es** — sie soll nicht Git lernen müssen, um ihr Werkzeug zu
 bekommen:
 

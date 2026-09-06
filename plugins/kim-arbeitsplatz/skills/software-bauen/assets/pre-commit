@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Blockiert Commits, die Zugangsdaten oder echte Daten enthalten wuerden.
+# Wird vom Skill software-bauen in jedes Projekt eingesetzt. Laeuft IMMER -
+# auch wenn aus dem Editor heraus committet wird, auch ohne Claude.
+set -u
+
+BLOCK=0
+meld() { echo ""; echo "  ✋ $1"; echo "     $2"; BLOCK=1; }
+
+STAGED="$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null)"
+[ -z "$STAGED" ] && exit 0
+
+MUSTER='sk-ant-api[0-9]{2}-|sk-[A-Za-z0-9]{32,}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{22,}|AIza[0-9A-Za-z_-]{35}|xoxb-[0-9A-Za-z-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}'
+AUSNAHME='\.env\.beispiel$|\.env\.example$|package-lock\.json$|yarn\.lock$|\.min\.js$|\.map$|pre-commit$|sicherheits-check\.sh$'
+
+echo ""
+echo "  Prüfe, was gespeichert werden soll …"
+
+printf '%s\n' "$STAGED" | grep -vE "$AUSNAHME" | while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  T="$(git show ":$f" 2>/dev/null | grep -InE "$MUSTER" | head -1)"
+  [ -n "$T" ] && echo "SECRET|$f|$(printf '%s' "$T" | cut -c1-90)"
+done > /tmp/.sb-precommit.$$ 2>/dev/null
+
+while IFS='|' read -r art datei detail; do
+  [ "$art" = "SECRET" ] && meld "Zugangsdaten in: $datei" "$detail"
+done < /tmp/.sb-precommit.$$
+rm -f /tmp/.sb-precommit.$$ 2>/dev/null
+
+# .env selbst
+printf '%s\n' "$STAGED" | grep -qE '(^|/)\.env$' && \
+  meld "Die Datei .env soll mit gespeichert werden" "Darin stehen Zugangsdaten. Sie gehört in .gitignore, nicht ins Projektarchiv."
+
+# Echte Daten
+DATEN="$(printf '%s\n' "$STAGED" | grep -iE '(^|/)daten/|\.(csv|xlsx|xls|sqlite|db)$' | head -3)"
+[ -n "$DATEN" ] && meld "Daten-Dateien sollen mit gespeichert werden" "$(printf '%s' "$DATEN" | tr '\n' ' ') — falls echte Personendaten drin sind, gehören sie nach daten/ (wird nicht mitgespeichert)."
+
+if [ $BLOCK -eq 1 ]; then
+  cat <<'HINWEIS'
+
+  ─────────────────────────────────────────────────────────────
+  Gespeichert wurde NICHTS. Das ist Absicht.
+
+  Was hier gefunden wurde, würde beim nächsten Hochladen mit ins
+  Netz gehen — und wäre dann nicht mehr zurückzuholen, auch wenn
+  man es später löscht.
+
+  Sag Claude einfach "räum das auf", dann wird es sauber gelöst.
+  ─────────────────────────────────────────────────────────────
+
+HINWEIS
+  exit 1
+fi
+
+echo "  ✓ nichts Heikles dabei"
+exit 0

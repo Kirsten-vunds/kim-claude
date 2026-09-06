@@ -86,7 +86,14 @@ cat > "$ZIEL/.env.beispiel" <<'ENV'
 ENV
 
 if [ $OHNE_GIT -eq 0 ] && command -v git >/dev/null 2>&1; then
-  git -C "$ZIEL" init -q 2>/dev/null && git -C "$ZIEL" add -A 2>/dev/null \
+  git -C "$ZIEL" init -q 2>/dev/null
+  # Sperre gegen versehentliches Mitspeichern von Zugangsdaten und echten Daten
+  if [ -f "$VORLAGEN/pre-commit" ]; then
+    mkdir -p "$ZIEL/.git/hooks"
+    cp "$VORLAGEN/pre-commit" "$ZIEL/.git/hooks/pre-commit"
+    chmod +x "$ZIEL/.git/hooks/pre-commit"
+    echo "Schutz vor versehentlichem Mitspeichern: aktiv"
+  fi && git -C "$ZIEL" add -A 2>/dev/null \
     && git -C "$ZIEL" commit -qm "Projekt angelegt" 2>/dev/null && echo "Git: initialisiert"
 fi
 

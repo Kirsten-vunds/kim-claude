@@ -30,6 +30,10 @@ ausgerechnet diesen Datensatz?* Die zweite Hälfte wird am häufigsten vergessen
 **Eingaben nie direkt in Abfragen einsetzen.** Immer parametrisierte Abfragen oder ein ORM.
 Zeichenketten zusammenkleben ist der direkte Weg zu SQL-Injection.
 
+**Die Sperre gegen versehentliches Mitspeichern bleibt scharf.** Jedes Projekt bekommt beim
+Anlegen eine Prüfung, die Commits mit Zugangsdaten oder echten Daten blockiert. Sie mit
+`--no-verify` zu umgehen ist nie die Lösung — wenn sie anschlägt, hat sie recht.
+
 **Von Anfang an in Git**, mit kleinen Schritten. Das ist die Rückfahrkarte, wenn etwas
 kaputtgeht — und der einzige Grund, warum man beim Bauen mutig sein darf.
 
