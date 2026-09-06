@@ -64,8 +64,26 @@ werden darf. Danach meldet sich jeder mit seinem normalen Firmenkonto an.
 euch: Ihr seht im Microsoft-Verwaltungsbereich genau, was er darf, könnt Rechte enger fassen
 und ihn jederzeit sperren. Manche IT-Abteilungen erlauben nur diesen Weg.
 
-**Beides ist in Ordnung, keiner ist der bessere.** Frag, ob es dazu eine Vorgabe gibt oder ob
-ihr die IT gemeinsam fragen sollt. Wenn die Antwort nicht sofort da ist, überspring den Schritt
+**Beides ist in Ordnung, keiner ist der bessere** — solange eine Bedingung erfüllt ist, und die
+ist wichtiger als die Wahl zwischen A und B:
+
+> **Der Zugriff muss "delegiert" sein, nicht "als Anwendung".**
+>
+> Delegiert heißt: Das Programm handelt in deinem Namen und kommt an genau das, woran du auch
+> kommst — deine Mails, deine Dateien. Deshalb meldest du dich im Browser an.
+>
+> Als Anwendung heißt: Das Programm handelt ohne Person, mit eigenem Schlüssel, und kommt dann
+> an **alle** Postfächer im Unternehmen. Das braucht hier niemand, und es wäre ein Risiko, das
+> in keinem Verhältnis zum Nutzen steht.
+
+Das gilt auf **beiden** Wegen. Eine unternehmenseigene Registrierung mit Anwendungsberechtigung
+wäre gefährlicher als eine freigegebene mit delegiertem Zugriff — die Frage "wem gehört die
+App" ist nicht die Sicherheitsfrage, die Frage nach der Berechtigungsart ist es.
+
+Sag das der Person in einem Satz, damit sie es in der Rückfrage an die IT bringen kann. Die IT
+versteht die Unterscheidung sofort.
+
+Frag dann, ob es dazu eine Vorgabe gibt oder ob ihr die IT gemeinsam fragen sollt. Wenn die Antwort nicht sofort da ist, überspring den Schritt
 und notier ihn — alles Übrige funktioniert auch ohne Microsoft-Anbindung.
 
 ### Die Anfrage an die IT
@@ -86,6 +104,10 @@ kurz, konkret, beantwortbar:
 > **A)** Ihr gebt die bestehende Anwendung in unserem Tenant frei (einmalige
 > Administrator-Zustimmung).
 > **B)** Ihr registriert eine eigene Anwendung bei uns und gebt mir deren Kennung.
+>
+> In beiden Fällen brauche ich **ausschließlich delegierte Berechtigungen** (Zugriff im Namen
+> des angemeldeten Nutzers), **keine Anwendungsberechtigungen** — der Assistent soll nur an
+> meine eigenen Daten kommen, nicht an die anderer Kolleginnen und Kollegen.
 >
 > Welcher Weg passt besser zu unseren Vorgaben? Und gibt es etwas, das ich vorher wissen
 > sollte — etwa Einschränkungen, welche Daten ein solcher Assistent verarbeiten darf?
