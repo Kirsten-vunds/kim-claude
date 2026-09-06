@@ -8,7 +8,7 @@
 #
 # Nutzung:
 #   n8n-nodeversions.sh 2.34.5                      # Docker lokal
-#   N8N_DOCKER_HOST=kimbox n8n-nodeversions.sh 2.34.5   # Docker per SSH (Mac ohne Docker-Daemon)
+#   N8N_DOCKER_HOST=<host> n8n-nodeversions.sh 2.34.5  # Docker per SSH (falls lokal keiner laeuft)
 #
 # Ausgabe: JSON-Array [{type, defaultVersion, versions[]}] nach stdout,
 # Fortschritt nach stderr. Ergebnis in references/ ablegen und im Skill zitieren.
@@ -33,8 +33,8 @@ if [[ -n "$REMOTE" ]]; then
     docker run --rm -v /tmp/n8n-dump-node-versions.js:/tmp/d.js:ro \
       --entrypoint node $IMAGE /tmp/d.js"
 else
-  command -v docker >/dev/null || { echo "FEHLER: kein docker. Setze N8N_DOCKER_HOST=kimbox." >&2; exit 1; }
-  docker info >/dev/null 2>&1 || { echo "FEHLER: Docker-Daemon läuft nicht. Setze N8N_DOCKER_HOST=kimbox." >&2; exit 1; }
+  command -v docker >/dev/null || { echo "FEHLER: kein docker. Setze N8N_DOCKER_HOST=<host> fuer Docker per SSH." >&2; exit 1; }
+  docker info >/dev/null 2>&1 || { echo "FEHLER: Docker-Daemon läuft nicht. Setze N8N_DOCKER_HOST=<host> fuer Docker per SSH." >&2; exit 1; }
   echo "Docker lokal, Image $IMAGE" >&2
   docker pull -q "$IMAGE" >/dev/null || exit 1
   docker run --rm -v "$DUMPER:/tmp/d.js:ro" --entrypoint node "$IMAGE" /tmp/d.js

@@ -62,7 +62,7 @@ Beim ersten Start öffnet sich ein Browserfenster für die Anmeldung.
 Im laufenden Claude-Fenster:
 
 ```
-/plugin marketplace add v-und-s/kim-claude
+/plugin marketplace add Kirsten-vunds/kim-claude
 /plugin install kim-arbeitsplatz@kim
 ```
 
