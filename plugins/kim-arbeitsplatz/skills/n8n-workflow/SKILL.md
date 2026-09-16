@@ -161,7 +161,8 @@ Nachfolgende Nodes (z.B. Extract from File) müssen den `binaryPropertyName` auf
 `scripts/n8n-deploy.sh` säubert den Payload automatisch (nur `name`, `nodes`, `connections`, `settings.executionOrder` — alles andere quittiert die API mit 400):
 
 ```bash
-export N8N_API_URL=$N8N_WFG_API_URL N8N_API_KEY=$N8N_WFG_API_KEY
+# Zugang der Ziel-Instanz setzen, falls nicht schon in der Umgebung:
+# export N8N_API_URL=https://.../api/v1  N8N_API_KEY=...
 
 scripts/n8n-deploy.sh list                        # was liegt schon drauf
 scripts/n8n-deploy.sh create   workflow.json      # → gibt die neue ID aus

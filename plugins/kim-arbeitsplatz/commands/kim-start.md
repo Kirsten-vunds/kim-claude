@@ -120,7 +120,7 @@ und sag vorher, dass die Berechtigungsabfrage normal ist und was Claude damit da
 Halt die Entscheidung fest — Weg, Kennung, wer sie freigegeben hat, wann. Beim nächsten Rechner
 im selben Unternehmen erspart das die ganze Runde.
 
-## Schritt 4 — n8n verbinden
+## Schritt 4 — n8n verbinden (optional)
 
 Nur wenn das Unternehmen eine n8n-Instanz hat. Du brauchst Adresse und einen API-Schlüssel.
 Fehlt beides, überspring den Schritt kommentarlos — die wenigsten brauchen ihn am ersten Tag.

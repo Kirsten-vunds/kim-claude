@@ -723,6 +723,39 @@ bash "$SB"/scripts/sicherheits-check.sh --url https://die-adresse.de
 Das versucht, ohne Login an die Daten zu kommen — genau der Test, den bei den Lovable-Projekten
 niemand gemacht hat.
 
+**Sicher ist nicht dasselbe wie belastbar.** Der Scan sagt, dass niemand hineinkommt, der nicht
+darf. Er sagt nichts darüber, ob die Anwendung den ersten echten Montagmorgen übersteht. Drei
+Proben, die genau dort ansetzen, wo fertig gebaute Anwendungen üblicherweise umkippen — jede
+liefert einen Beleg, der ins `PLAN.md` kommt, nicht ein Gefühl:
+
+1. **Die Belastungsprobe auf der einen wichtigen Tabelle.** Nicht die ganze Anwendung testen,
+   sondern die eine Datenart, durch die alles läuft — die Aufträge, die Anfragen, die Termine.
+   Schreib ein kleines Skript, das dort so viele Einträge anlegt und liest, wie an einem guten
+   Tag realistisch zusammenkommen, und lass mehrere davon gleichzeitig laufen. Umkippen tut
+   so etwas nämlich nicht am schlechtesten Tag, sondern am besten: wenn alle gleichzeitig
+   arbeiten. Häufigster Befund ist ein fehlender Index — eine Zeile Änderung, wenn man sie
+   vorher findet, und ein stehendes System, wenn nicht.
+
+2. **Jeder fremde Dienst einmal im Echtbetrieb.** Testmodus lügt. Mailversand, Zahlungen,
+   Schnittstellen zu anderen Systemen verhalten sich scharf geschaltet anders als im
+   Sandkasten: Die Mail kommt an, landet aber im Spam-Ordner. Die Zahlung geht durch, aber
+   die Quittung nicht raus. Also einmal echt: eine echte Mail an ein echtes Postfach
+   (und nachsehen, wo sie gelandet ist), bei Zahlungen eine echte Karte mit kleinem Betrag,
+   danach erstatten. Das kostet zwei Euro und eine Viertelstunde.
+
+3. **Die Rückspielprobe.** Nimm das letzte Backup und spiel es irgendwo anders wieder ein,
+   bis die Anwendung darauf läuft. Ein Backup, das nie zurückgespielt wurde, ist kein Backup,
+   sondern ein Ordner. Das Datum der geglückten Rückspielung gehört ins `PLAN.md` — ohne Datum
+   zählt es nicht.
+
+Sag der Person klar, warum das jetzt kommt und nicht später: *"Die Anwendung funktioniert. Was
+Software nach dem Livegang umbringt, ist fast nie ein Fehler im Programm — es ist die Datenbank
+unter Last, ein Dienst, der scharf anders reagiert als im Test, und ein Backup, das im Ernstfall
+keins war. Das prüfen wir einmal, jetzt."*
+
+Bei einem POC für ein paar Leute reicht Punkt 3 und ein kurzer Blick auf 2. Die volle Runde
+gehört zu allem, worauf sich danach jemand verlässt.
+
 ## Der Ampel-Report
 
 Übersetze jeden Fund in Klartext: **was jemand tun könnte**, nicht wie die Lücke heißt. Und

@@ -89,6 +89,15 @@ alte nicht löschen.*
 - **Wie eine neue Version live geht:** <Weg in einem Satz>
 - **Wie man ein Backup zurückspielt:** <Weg in einem Satz — und wann das zuletzt getestet wurde>
 
+## Vor dem Livegang belegt
+
+*Kein Haken ohne Datum — sonst ist es eine Absicht, kein Beleg.*
+
+- **Sicherheits-Check von außen:** <Datum, Ergebnis>
+- **Belastungsprobe auf <die wichtigste Tabelle>:** <Datum, wie viele gleichzeitig, Ergebnis>
+- **Fremde Dienste im Echtbetrieb getestet:** <Datum — Mail kam an in <Posteingang/Spam>, Zahlung durchgelaufen und erstattet>
+- **Backup zurückgespielt:** <Datum, wohin>
+
 ## Mit jemandem klären, der sich auskennt
 
 *Keine Aufgaben, nur Notizen — abarbeiten, wenn es ernst wird.*

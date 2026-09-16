@@ -1,8 +1,17 @@
 {
   "name": "kim-arbeitsplatz",
   "version": "0.1.0",
-  "description": "Arbeitsplatz-Einrichtung fuer Claude Code (Microsoft 365, n8n, Sicherheits-Hooks) plus der Skill software-bauen, mit dem Menschen ohne IT-Hintergrund eigene Software bauen koennen. Start mit /kim-start.",
-  "author": { "name": "KIM / Vollmer & Scheffczyk GmbH", "email": "kim@v-und-s.de" },
-  "keywords": ["onboarding", "ms365", "n8n", "software-bauen", "sicherheit"],
+  "description": "Arbeitsplatz-Einrichtung fuer Claude Code (Microsoft 365, Sicherheits-Hooks) plus der Skill software-bauen, mit dem Menschen ohne IT-Hintergrund eigene Software bauen koennen. Start mit /kim-start. Optional: n8n-Anbindung fuer Firmen, die bereits eine n8n-Instanz betreiben.",
+  "author": {
+    "name": "KIM / Vollmer & Scheffczyk GmbH",
+    "email": "kim@v-und-s.de"
+  },
+  "keywords": [
+    "onboarding",
+    "ms365",
+    "software-bauen",
+    "sicherheit",
+    "n8n"
+  ],
   "license": "MIT"
 }

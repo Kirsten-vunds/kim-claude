@@ -2,18 +2,34 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "kim",
   "description": "KIM — KI im Mittelstand: Arbeitsplatz-Einrichtung und Software bauen ohne IT-Hintergrund",
-  "owner": { "name": "Vollmer & Scheffczyk GmbH — KIM", "email": "kim@v-und-s.de" },
-  "metadata": { "version": "0.1.0" },
+  "owner": {
+    "name": "Vollmer & Scheffczyk GmbH — KIM",
+    "email": "kim@v-und-s.de"
+  },
+  "metadata": {
+    "version": "0.1.0"
+  },
   "plugins": [
     {
       "name": "kim-arbeitsplatz",
       "source": "./plugins/kim-arbeitsplatz",
-      "description": "Richtet Claude Code fuer die taegliche Arbeit ein (Microsoft 365, n8n, Sicherheits-Hooks) und bringt den Skill mit, mit dem auch Nicht-Entwickler eigene Software bauen koennen.",
+      "description": "Richtet Claude Code fuer die taegliche Arbeit ein (Microsoft 365, Sicherheits-Hooks) und bringt den Skill mit, mit dem auch Nicht-Entwickler eigene Software bauen koennen. Optional dazu: n8n-Anbindung, wenn im Unternehmen bereits eine n8n-Instanz laeuft.",
       "version": "0.1.0",
-      "author": { "name": "KIM / V&S", "email": "kim@v-und-s.de" },
+      "author": {
+        "name": "KIM / V&S",
+        "email": "kim@v-und-s.de"
+      },
       "license": "MIT",
       "category": "productivity",
-      "keywords": ["onboarding", "setup", "ms365", "n8n", "software-bauen", "kim", "mittelstand"]
+      "keywords": [
+        "onboarding",
+        "setup",
+        "ms365",
+        "software-bauen",
+        "kim",
+        "mittelstand",
+        "n8n"
+      ]
     }
   ]
 }

@@ -14,6 +14,7 @@ Gedacht für Menschen, die noch nie programmiert haben.
 | **`/kim-start`** | Richtet den Arbeitsplatz ein: Microsoft 365 verbinden, Schutzmechanismen aktivieren, eine Notiz über Firma und Rolle anlegen. Einmal, im Gespräch, etwa 15 Minuten. |
 | **Skill `software-bauen`** | Begleitet beim Bauen eigener Anwendungen — von der Idee über einen abgestimmten Plan bis zum sicheren Livegang. Springt von selbst an, wenn jemand beschreibt, was er gern hätte. |
 | **Schutzmechanismen** | Fragen nach, bevor etwas Unwiderrufliches passiert. |
+| **Skill `n8n-workflow`** *(optional)* | Nur für Unternehmen, die bereits eine n8n-Instanz betreiben: baut und veröffentlicht dort Automatisierungen. Wer keine hat, merkt nichts davon. |
 
 ---
 
