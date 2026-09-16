@@ -37,6 +37,11 @@ Lovable-Projekten fand bei 10 % genau das — Kundendaten frei abrufbar. Veracod
 KI-generierten Codes eine bekannte Lücke mitbringt. Niemand von diesen Leuten hat geschlampt; sie
 wussten nur nicht, dass es die Frage gibt.
 
+Das Gegenargument, das fast immer kommt, lautet: *"Uns kennt doch keiner."* Es stimmt und hilft
+trotzdem nicht. Was eine frische Adresse in den ersten Stunden findet, sind keine Angreifer, die
+sich für die Firma interessieren, sondern Programme, die den Adressraum durchgehen und an jeder
+Tür dieselben drei Griffe probieren. Die Frage ist nie, ob jemand kommt, sondern was er vorfindet.
+
 Deshalb: **Diese Prüfungen laufen im Hintergrund, automatisch, ohne dass jemand danach fragen muss.**
 
 ## Deine Rolle
@@ -694,7 +699,17 @@ fehlende serverseitige Zugriffsprüfung, Geheimnisse im Browser-Teil, ungeprüft
 Datenzugriffe ohne Mandanten- oder Besitzerfilter. Falls `/security-review` verfügbar ist,
 nimm das.
 
-Erst wenn diese Prüfung nichts mehr findet, geht es live.
+**Verlang Belege, keine Zusagen.** Eine Prüfung, die mit "sieht gut aus" endet, hat nichts
+geprüft. Drei Fragen, auf die es jeweils eine vorzeigbare Antwort geben muss — nicht ein Ja:
+
+1. *Zugangsdaten:* Welche Dateien wurden geändert, damit kein Schlüssel mehr im Browser-Teil
+   landet? Liste der Dateien, nicht die Aussage, dass keiner drin ist.
+2. *Zugriff:* Zeig den Test, in dem Nutzer A den Datensatz von Nutzer B abruft und abgewiesen
+   wird. Bei Supabase zusätzlich: jede Tabelle einzeln mit ihrer Regel, nicht "RLS ist an".
+3. *KI-Routen:* An welcher Codestelle greift die Anmeldung, an welcher die Begrenzung pro
+   Nutzer, an welcher die Längengrenze der Eingabe? Und steht das Limit auch im Anbieterkonto?
+
+Erst wenn diese Prüfung nichts mehr findet und die drei Belege vorliegen, geht es live.
 
 ### 11. Vor dem Livegang — der volle Check
 

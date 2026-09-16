@@ -42,6 +42,12 @@ kaputtgeht — und der einzige Grund, warum man beim Bauen mutig sein darf.
 **Login über einen fertigen Dienst**, nie selbst gebaut. Supabase Auth, Auth0, Clerk. Passwort-
 Hashing, Zurücksetzen, Sitzungsverwaltung selbst zu bauen geht fast immer schief.
 
+**Der Besitzer-Test gehört zur Abnahme, nicht zur Kür.** Sobald es zwei Nutzer geben kann,
+gibt es einen Test, der es darauf anlegt: *Nutzer A meldet sich an und versucht, den Datensatz
+von Nutzer B zu lesen und zu ändern.* Er muss scheitern, und zwar serverseitig. Dieser Test ist
+der Beweis; ohne ihn ist die Zugriffsprüfung eine Behauptung. Er läuft bei jeder Änderung mit,
+damit der Fehler nicht zurückkommen kann.
+
 **Rollen von Anfang an mitdenken**, auch wenn es zunächst nur zwei gibt. Nachträglich ein
 Rollenmodell in eine gewachsene Anwendung zu ziehen ist teuer.
 
@@ -63,8 +69,17 @@ Fähigkeit, hinterher überhaupt sagen zu können, was passiert ist.
 
 ## Sobald KI eingebaut ist
 
-**Ausgabenlimit vor dem ersten Aufruf.** Beim Anbieter im Konto, nicht nur im Code. Eine
-Schleife, die versehentlich tausendmal aufruft, ist ein normaler Programmierfehler.
+**Jede Route, die ein Modell aufruft, ist angemeldet und begrenzt.** Ein offener Endpunkt,
+hinter dem ein KI-Schlüssel liegt, ist eine Bezahlschnittstelle, die auf eure Rechnung läuft —
+und sie wird gefunden, ohne dass jemand es auf euch abgesehen hat. Drei Dinge gehören an jede
+solche Route: Anmeldung, eine Begrenzung **pro Nutzer** (nicht nur insgesamt, sonst blockiert
+ein einzelner alle anderen) und eine Obergrenze für die Länge der Eingabe. Ohne die Längengrenze
+kostet ein einziger Aufruf beliebig viel.
+
+**Ausgabenlimit vor dem ersten Aufruf.** Beim Anbieter im Konto, nicht nur im Code — ein
+Tageslimit und eine Warnung, die bei einem Bruchteil davon anschlägt. Der Code kann sich irren,
+das Konto nicht. Eine Schleife, die versehentlich tausendmal aufruft, ist ein normaler
+Programmierfehler.
 
 **Der Agent darf nur, was er muss.** Wenn eine KI Daten lesen soll, gib ihr keinen Schreibzugriff.
 Das ist die häufigste Schwachstelle in KI-Anwendungen überhaupt.
@@ -79,9 +94,11 @@ werden. Trenn Anweisung und Material deutlich.
 
 **Supabase:** Row Level Security ist bei neuen Tabellen **nicht** automatisch an. Ohne sie ist
 die Tabelle über die öffentliche Schnittstelle frei abrufbar — genau der Fehler, der bei 10 %
-von 1.645 geprüften Lovable-Projekten Kundendaten offengelegt hat. Für jede Tabelle:
+von 1.645 geprüften Lovable-Projekten Kundendaten offengelegt hat. Für **jede** Tabelle:
 `alter table <name> enable row level security;` plus Regeln, die den eigenen Datensatz
-freigeben. Danach mit dem `anon key` gegenprüfen, dass ohne Login nichts kommt.
+freigeben. Eine abgesicherte Tabelle und neun offene sehen im Code fast gleich aus — zähl sie
+durch: jede Tabelle, die angelegt wurde, braucht ihre eigene Zeile. Danach mit dem `anon key`
+gegenprüfen, dass ohne Login nichts kommt.
 
 **Next.js / Vercel:** Nur Variablen mit `NEXT_PUBLIC_` landen im Browser — alles andere bleibt
 serverseitig. Umgekehrt heißt das: Setz dieses Präfix niemals vor einen echten Schlüssel.
