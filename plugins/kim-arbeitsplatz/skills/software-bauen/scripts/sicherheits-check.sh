@@ -137,6 +137,77 @@ if [ -n "$(printf '%s' "$KIDATEIEN" | tr -d '[:space:]')" ]; then
   fi
 fi
 
+echo "== 4d. Wer von aussen anfragen darf (CORS) =="
+CORSD="$(printf '%s\n' "$DATEIEN" | while IFS= read -r f; do
+  [ -f "$f" ] && grep -lIE 'Access-Control-Allow-Origin|cors\(|CORSMiddleware|allow_origins' -- "$f" 2>/dev/null
+done | grep -vE 'node_modules|sicherheits-check\.sh|\.md$|package(-lock)?\.json|\.min\.js$' || true)"
+if [ -n "$(printf '%s' "$CORSD" | tr -d '[:space:]')" ]; then
+  OFFEN_CORS="$(printf '%s\n' "$CORSD" | while IFS= read -r f; do
+    grep -InE "Access-Control-Allow-Origin[\"' ]*[,:] *[\"']\*|allow_origins *= *\[ *[\"']\*|origin: *[\"']\*" -- "$f" 2>/dev/null | head -2 | sed "s|^|$f:|"
+  done)"
+  NACKT="$(printf '%s\n' "$CORSD" | while IFS= read -r f; do
+    grep -InE 'app\.use\(cors\(\)\)|cors\(\) *\)' -- "$f" 2>/dev/null | head -1 | sed "s|^|$f:|"
+  done)"
+  if [ -n "$(printf '%s' "$OFFEN_CORS" | tr -d '[:space:]')" ]; then
+    printf '%s\n' "$OFFEN_CORS" | while IFS= read -r c; do
+      rot "CORS steht auf * - jede fremde Seite darf anfragen" "$(printf '%s' "$c" | cut -c1-160)"
+    done
+  elif [ -n "$(printf '%s' "$NACKT" | tr -d '[:space:]')" ]; then
+    printf '%s\n' "$NACKT" | while IFS= read -r c; do
+      rot "CORS ohne Einschraenkung eingeschaltet" "$(printf '%s' "$c" | cut -c1-160) - cors() ohne origin-Angabe erlaubt jede Herkunft"
+    done
+  else
+    gruen "CORS ist eingeschraenkt" "Keine Freigabe fuer jede Herkunft gefunden"
+  fi
+fi
+
+echo "== 4e. Sitzung und Cookies =="
+LSTREFFER="$(printf '%s\n' "$DATEIEN" | while IFS= read -r f; do
+  [ -f "$f" ] && grep -InE 'localStorage\.setItem\( *[\"'\''`][^\"'\''`]*(token|jwt|session|auth|key)' -- "$f" 2>/dev/null | head -2 | sed "s|^|$f:|"
+done | grep -vE 'node_modules|\.min\.js$' || true)"
+if [ -n "$(printf '%s' "$LSTREFFER" | tr -d '[:space:]')" ]; then
+  printf '%s\n' "$LSTREFFER" | while IFS= read -r l; do
+    gelb "Anmelde-Token im Browser-Speicher" "$(printf '%s' "$l" | cut -c1-160) - aus localStorage kann eingeschleuster Fremdcode es auslesen; besser httpOnly-Cookie"
+  done
+fi
+COOKIED="$(printf '%s\n' "$DATEIEN" | while IFS= read -r f; do
+  [ -f "$f" ] && grep -lIE 'res\.cookie\(|cookies\(\)\.set\(|set_cookie|setHeader\([\"'\'']Set-Cookie' -- "$f" 2>/dev/null
+done | grep -vE 'node_modules|sicherheits-check\.sh|\.md$|\.min\.js$' || true)"
+if [ -n "$(printf '%s' "$COOKIED" | tr -d '[:space:]')" ]; then
+  if grep -lIE 'httpOnly|httponly|HttpOnly' $(printf '%s\n' "$COOKIED") >/dev/null 2>&1; then
+    gruen "Cookies werden mit httpOnly gesetzt" "secure und sameSite zusaetzlich pruefen"
+  else
+    rot "Cookie ohne httpOnly gesetzt" "$(printf '%s\n' "$COOKIED" | head -1) - ein Anmelde-Cookie ohne httpOnly, secure und sameSite ist auslesbar und geht bei fremden Anfragen mit"
+  fi
+fi
+
+echo "== 4f. Geld und Rueckmeldungen fremder Dienste =="
+ZAHLD="$(printf '%s\n' "$DATEIEN" | while IFS= read -r f; do
+  [ -f "$f" ] && grep -lIE 'stripe|paypal|mollie|checkout\.session|paymentIntent' -- "$f" 2>/dev/null
+done | grep -vE 'node_modules|sicherheits-check\.sh|\.md$|package(-lock)?\.json|\.min\.js$' || true)"
+if [ -n "$(printf '%s' "$ZAHLD" | tr -d '[:space:]')" ]; then
+  BETRAG="$(printf '%s\n' "$ZAHLD" | while IFS= read -r f; do
+    grep -InE '(amount|unit_amount|price|betrag|preis)[^=]{0,20}(req\.body|request\.body|body\.|params\.|searchParams|req\.query)' -- "$f" 2>/dev/null | head -2 | sed "s|^|$f:|"
+  done)"
+  if [ -n "$(printf '%s' "$BETRAG" | tr -d '[:space:]')" ]; then
+    printf '%s\n' "$BETRAG" | while IFS= read -r b; do
+      rot "Betrag kommt aus der Anfrage" "$(printf '%s' "$b" | cut -c1-160) - Preis und Menge gehoeren serverseitig aus den eigenen Daten, sonst ist der Betrag manipulierbar"
+    done
+  else
+    gruen "Kein Betrag aus der Anfrage uebernommen" "Preise werden offenbar serverseitig bestimmt"
+  fi
+fi
+WEBHOOKD="$(printf '%s\n' "$DATEIEN" | while IFS= read -r f; do
+  [ -f "$f" ] && grep -lIE 'webhook' -- "$f" 2>/dev/null
+done | grep -vE 'node_modules|sicherheits-check\.sh|\.md$|package(-lock)?\.json|\.min\.js$|\.env' || true)"
+if [ -n "$(printf '%s' "$WEBHOOKD" | tr -d '[:space:]')" ]; then
+  if grep -lIE 'constructEvent|verifySignature|verify_signature|svix|createHmac|hmac|timingSafeEqual|compare_digest' $(printf '%s\n' "$WEBHOOKD") >/dev/null 2>&1; then
+    gruen "Webhook prueft die Signatur" "Zusaetzlich pruefen, dass dieselbe Meldung nur einmal verarbeitet wird"
+  else
+    rot "Webhook ohne Signaturpruefung" "$(printf '%s\n' "$WEBHOOKD" | head -1) - die Adresse kann jeder kennen; ohne Signaturpruefung kann jeder z.B. eine Zahlung melden, die nie stattfand"
+  fi
+fi
+
 echo "== 5. Abhaengigkeiten =="
 if [ -f package.json ] && command -v npm >/dev/null 2>&1; then
   A="$(npm audit --omit=dev --json 2>/dev/null || true)"

@@ -30,6 +30,15 @@ ausgerechnet diesen Datensatz?* Die zweite Hälfte wird am häufigsten vergessen
 **Eingaben nie direkt in Abfragen einsetzen.** Immer parametrisierte Abfragen oder ein ORM.
 Zeichenketten zusammenkleben ist der direkte Weg zu SQL-Injection.
 
+**Jede Eingabe wird auf dem Server geprüft, bevor sie irgendetwas anfasst.** Für jeden Endpunkt
+ein Bauplan der erwarteten Daten — welche Felder, welcher Typ, welche Länge, welches Format —,
+und was nicht dazu passt, wird abgewiesen. Prüfungen im Formular sind Bequemlichkeit für den
+Nutzer, keine Sicherheit: die Anfrage lässt sich am Formular vorbei stellen. Zwei Fallen dabei:
+**Übernimm nie einfach das ganze Eingabepaket in den Datensatz** — sonst schickt jemand ein Feld
+mit, das er nie ausfüllen durfte (`rolle: admin`, `freigeschaltet: true`), und es wird
+mitgespeichert. Übernimm die Felder einzeln und benannt. Und **begrenz die Größe der Anfrage**,
+sonst kann man den Server mit einem einzigen riesigen Paket beschäftigen.
+
 **Die Sperre gegen versehentliches Mitspeichern bleibt scharf.** Jedes Projekt bekommt beim
 Anlegen eine Prüfung, die Commits mit Zugangsdaten oder echten Daten blockiert. Sie mit
 `--no-verify` zu umgehen ist nie die Lösung — wenn sie anschlägt, hat sie recht.
@@ -53,6 +62,27 @@ Rollenmodell in eine gewachsene Anwendung zu ziehen ist teuer.
 
 **Bremse am Login.** Ohne Begrenzung kann jemand Passwörter im Sekundentakt durchprobieren.
 Zehn Versuche, dann eine Pause.
+
+**Die Bremse gilt nicht nur am Login.** Jeder Endpunkt, der schreibt, verschickt oder Geld
+kostet, bekommt eine Begrenzung pro Nutzer und pro Adresse. Sonst genügt ein Skript, um die
+Anwendung lahmzulegen oder eure Rechnung hochzutreiben.
+
+**Die Sitzung gehört in ein Cookie, nicht in den Browser-Speicher.** Ein Anmelde-Token in
+`localStorage` kann jedes eingeschleuste Skript auslesen und mitnehmen. Richtig ist ein Cookie
+mit drei Eigenschaften: `httpOnly` (für Skripte unlesbar), `secure` (nur über verschlüsselte
+Verbindung), `sameSite` (geht nicht bei Anfragen von fremden Seiten mit). Und: Beim Abmelden
+wird die Sitzung serverseitig ungültig, nicht nur das Cookie im Browser gelöscht.
+
+**Cookie-Anmeldung braucht einen Schutz gegen untergeschobene Anfragen.** Wenn der Browser das
+Anmelde-Cookie automatisch mitschickt, kann eine fremde Webseite im Namen der angemeldeten
+Person eine Aktion auslösen (Cross-Site Request Forgery). `sameSite` deckt den Normalfall ab;
+bei allem, was ändert oder löscht, kommt ein Anfrage-Token dazu. Fertige Login-Dienste bringen
+das mit — wer selbst Formulare gegen eigene Endpunkte schickt, muss es einschalten.
+
+**Wer von außen anfragen darf, wird aufgezählt.** Die Erlaubnis für fremde Herkunft (CORS) steht
+auf genau euren Adressen — niemals auf `*`, erst recht nicht zusammen mit Anmeldedaten.
+`Access-Control-Allow-Origin: *` ist der Schalter, den man beim Entwickeln umlegt, weil es sonst
+nicht läuft, und der dann drinbleibt. Er gehört vor dem Livegang zurückgestellt.
 
 **Fehlermeldungen verraten nichts.** "Anmeldung fehlgeschlagen" — nicht "Passwort falsch"
 (das bestätigt, dass die Mailadresse existiert). Keine technischen Details nach außen.
@@ -140,6 +170,20 @@ irgendwann die Prüfung vergessen. Die Datenbank hat nur einen.
 Und bau dafür einen Test, der genau das versucht: *Kann Mandant A einen Datensatz von Mandant B
 abrufen?* Wenn dieser Test bei jeder Änderung mitläuft, kann dieser Fehler nicht zurückkommen.
 
+## Sobald Geld oder fremde Systeme im Spiel sind
+
+**Was etwas kostet, bestimmt der Server.** Preis, Menge, Rabatt und Währung werden auf dem Server
+aus den eigenen Daten geholt — niemals aus dem übernommen, was der Browser mitschickt. Sonst
+ändert jemand den Betrag auf dem Weg. Der Browser schickt, *was* gekauft wird, nicht *was es
+kostet*.
+
+**Rückmeldungen fremder Dienste werden auf Echtheit geprüft.** Ein Webhook — die Zeile, mit der
+Stripe meldet „bezahlt" oder ein anderes System „fertig" — ist eine Adresse, die jeder kennen
+kann. Ohne Prüfung der mitgelieferten Signatur kann jeder eine Zahlung melden, die nie
+stattgefunden hat. Jeder Anbieter liefert dafür ein Geheimnis und eine fertige Prüffunktion;
+die wird benutzt, bevor irgendetwas anderes passiert. Zusätzlich: dieselbe Meldung kann
+mehrfach ankommen — jede Meldung bekommt eine Kennung und wird nur einmal verarbeitet.
+
 ## Schlüssel für Schnittstellen
 
 Ein Schlüssel pro angebundenem System, nie ein universeller für alles. Jeder mit Ablaufdatum
@@ -155,6 +199,8 @@ Kurz durchgehen, das sind die Klassiker:
 - Fehlermeldungen nach außen sind allgemein gehalten, technische Details bleiben im Protokoll
 - Keine Zugangsdaten und keine vollständigen Personendaten in den Protokollen
 - Admin-Bereich nur intern erreichbar oder mit zweitem Faktor
+- CORS steht auf euren eigenen Adressen, nicht auf `*`
+- Anmelde-Cookies mit `httpOnly`, `secure` und `sameSite`
 - Jemand ist benannt, der Aktualisierungen einspielt — und weiß, dass er es ist
 
 ## Was protokolliert wird
