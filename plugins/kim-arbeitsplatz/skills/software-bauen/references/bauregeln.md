@@ -137,6 +137,15 @@ serverseitig. Umgekehrt heißt das: Setz dieses Präfix niemals vor einen echten
 Web-Wurzelverzeichnis ablegen. Hochgeladene Dateien sind fremder Code, bis das Gegenteil
 bewiesen ist.
 
+**Der Ablageort für Dateien braucht seine eigene Zugriffsprüfung.** Zeilenschutz auf den
+Tabellen gilt nur für die Tabellen — der Dateispeicher (bei Supabase die *Buckets*) ist eine
+zweite Tür und steht auf „öffentlich", wenn man beim Anlegen nicht aufpasst. Dann ist jede
+hochgeladene Datei über ihre Adresse abrufbar, ohne Login: Rechnungen, Ausweiskopien,
+Bewerbungsunterlagen. Also: Ablage auf privat, eigene Regeln je Bucket (wer darf hochladen, wer
+lesen), und Dateien werden über **zeitlich begrenzte Links** ausgeliefert statt über eine
+dauerhaft gültige Adresse. Gegenprobe wie bei den Tabellen: eine Datei-Adresse im
+Browser-Fenster ohne Anmeldung aufrufen — es darf nichts kommen.
+
 ## Angriffsfläche klein halten
 
 **Nur die Anwendung selbst ist öffentlich erreichbar.** Datenbank, Admin-Oberfläche und
@@ -159,6 +168,15 @@ maskiert werden. Sonst kann jemand statt eines Namens ein Stück Programmcode ei
 Browser der nächsten Person ausgeführt wird (Cross-Site-Scripting). Moderne Oberflächen-Werkzeuge
 tun das von selbst — solange man sie nicht mit Funktionen wie `dangerouslySetInnerHTML` oder
 `v-html` umgeht. Tu das nicht.
+
+## Antworten geben nur her, was gebraucht wird
+
+Eine Schnittstelle, die den ganzen Datensatz zurückgibt, gibt auch das zurück, woran gerade
+niemand denkt: Passwort-Hashes, interne Notizen, Mailadressen anderer Leute, Rollenkennzeichen.
+Dass die Oberfläche es nicht anzeigt, ändert nichts — die Antwort lässt sich im Browser ansehen.
+Also keine Abfrage mit „alle Spalten" (`select *`) hinter einer Schnittstelle: zähl die Felder
+auf, die die Ansicht wirklich braucht. Das gilt besonders für Nutzer- und Profildaten und für
+Listen, in denen fremde Datensätze mit auftauchen.
 
 ## Mandantentrennung
 
@@ -207,7 +225,7 @@ Kurz durchgehen, das sind die Klassiker:
 
 Nicht alles, aber das Richtige. **Hinein gehören:** Anmeldungen, erfolgreich wie gescheitert ·
 Passwortänderungen · jede schreibende Aktion mit Wer, Wann, Was und welcher Datensatz ·
-abgelehnte Zugriffe · Änderungen an Rechten. **Nicht hinein gehören:** Passwörter, Schlüssel,
+abgelehnte Zugriffe · Änderungen an Rechten · jeder Aufruf im Admin-Bereich, auch lesende. **Nicht hinein gehören:** Passwörter, Schlüssel,
 vollständige Personendaten. Aufbewahrung mindestens 90 Tage — vorher merkt man einen Vorfall
 oft gar nicht.
 

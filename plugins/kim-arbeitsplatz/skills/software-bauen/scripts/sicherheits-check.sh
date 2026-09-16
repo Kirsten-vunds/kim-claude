@@ -137,6 +137,33 @@ if [ -n "$(printf '%s' "$KIDATEIEN" | tr -d '[:space:]')" ]; then
   fi
 fi
 
+echo "== 4c2. Dateiablage und Antwortfelder =="
+STORD="$(printf '%s\n' "$DATEIEN" | while IFS= read -r f; do
+  [ -f "$f" ] && grep -lIE 'storage\.from\(|createBucket|storage/v1/object|getPublicUrl|S3Client|put_object' -- "$f" 2>/dev/null
+done | grep -vE 'node_modules|sicherheits-check\.sh|\.md$|package(-lock)?\.json|\.min\.js$' || true)"
+if [ -n "$(printf '%s' "$STORD" | tr -d '[:space:]')" ]; then
+  OFFENB="$(printf '%s\n' "$STORD" | while IFS= read -r f; do
+    grep -InE 'public *: *true|storage/v1/object/public|getPublicUrl' -- "$f" 2>/dev/null | head -2 | sed "s|^|$f:|"
+  done)"
+  if [ -n "$(printf '%s' "$OFFENB" | tr -d '[:space:]')" ]; then
+    printf '%s\n' "$OFFENB" | while IFS= read -r b; do
+      rot "Dateiablage ist oeffentlich" "$(printf '%s' "$b" | cut -c1-160) - hochgeladene Dateien sind dann ohne Login ueber ihre Adresse abrufbar; Bucket auf privat und mit zeitlich begrenzten Links ausliefern"
+    done
+  elif printf '%s\n' "$STORD" | xargs grep -lIE 'createSignedUrl|signed_url|presigned' >/dev/null 2>&1; then
+    gruen "Dateien werden ueber begrenzte Links ausgeliefert" "Zugriffsregeln je Bucket trotzdem im Dashboard pruefen"
+  else
+    gelb "Dateiablage im Einsatz, Zugriffsregeln nicht erkennbar" "Pruefen: Bucket auf privat, eigene Regeln je Bucket, Auslieferung ueber zeitlich begrenzte Links"
+  fi
+fi
+SELECTALL="$(printf '%s\n' "$DATEIEN" | grep -E '(api|route|server|handler|controller)' 2>/dev/null | while IFS= read -r f; do
+  [ -f "$f" ] && grep -InE "\.select\( *[\"'\`]\*|SELECT +\* +FROM" -- "$f" 2>/dev/null | head -2 | sed "s|^|$f:|"
+done | grep -vE 'node_modules|\.min\.js$' || true)"
+if [ -n "$(printf '%s' "$SELECTALL" | tr -d '[:space:]')" ]; then
+  printf '%s\n' "$SELECTALL" | while IFS= read -r s; do
+    gelb "Schnittstelle gibt alle Spalten zurueck" "$(printf '%s' "$s" | cut -c1-160) - die Antwort ist im Browser lesbar; nur die Felder aufzaehlen, die die Ansicht braucht"
+  done
+fi
+
 echo "== 4d. Wer von aussen anfragen darf (CORS) =="
 CORSD="$(printf '%s\n' "$DATEIEN" | while IFS= read -r f; do
   [ -f "$f" ] && grep -lIE 'Access-Control-Allow-Origin|cors\(|CORSMiddleware|allow_origins' -- "$f" 2>/dev/null
